@@ -2,16 +2,14 @@ import { Text } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Account = () => {
+const MarkUp = () => {
   return (
     <SafeAreaView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
-      <Text>Profile</Text>
-      <Text>Settings</Text>
-      <Text>Logout</Text>
+      <Text>MarkUp</Text>
     </SafeAreaView>
   );
 };
 
-export default Account;
+export default MarkUp;

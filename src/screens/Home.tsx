@@ -1,17 +1,15 @@
-import { Text } from "react-native";
 import React from "react";
+import { Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Account = () => {
+const Home = () => {
   return (
     <SafeAreaView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
-      <Text>Profile</Text>
-      <Text>Settings</Text>
-      <Text>Logout</Text>
+      <Text>Home</Text>
     </SafeAreaView>
   );
 };
 
-export default Account;
+export default Home;
