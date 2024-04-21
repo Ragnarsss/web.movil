@@ -5,7 +5,6 @@ import { AuthProvider } from "./src/context/AuthContext";
 import AppNav from "./src/navigation/AppNav";
 
 export default function App() {
-  const isAuth = null;
   useEffect(() => {
     const backAction = () => {
       return true;

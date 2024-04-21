@@ -13,8 +13,6 @@ export async function loginFetch(email: string, password: string) {
 
     const result = await response.json();
 
-    console.log("loginFetch", result);
-
     return result;
   } catch (error) {
     throw error;

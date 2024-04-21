@@ -1,7 +1,7 @@
-import { Button, Text } from "react-native";
-import React, { useContext } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { NavigationProp } from "@react-navigation/native";
+import React, { useContext } from "react";
+import { Button, Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext } from "../context/AuthContext";
 
 const Account = ({ navigation }: { navigation: NavigationProp<any> }) => {
