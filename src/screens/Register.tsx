@@ -14,7 +14,7 @@ type Props = {
 };
 
 const Register: React.FC<Props> = ({ navigation }) => {
-  const [name, setName] = useState("");
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const handleNavigation = (screen: string) => {
@@ -26,9 +26,9 @@ const Register: React.FC<Props> = ({ navigation }) => {
       <Text style={styles.title}>Register</Text>
       <TextInput
         style={styles.input}
-        placeholder="Name"
-        value={name}
-        onChangeText={setName}
+        placeholder="User name"
+        value={userName}
+        onChangeText={setUserName}
       />
       <TextInput
         style={styles.input}

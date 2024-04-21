@@ -1,10 +1,11 @@
-import { NavigationContainer } from "@react-navigation/native";
 import "react-native-gesture-handler";
-import NavigationStack from "./src/navigation/NavigationStack";
 import { useEffect } from "react";
 import { BackHandler } from "react-native";
+import { AuthProvider } from "./src/context/AuthContext";
+import AppNav from "./src/navigation/AppNav";
 
 export default function App() {
+  const isAuth = null;
   useEffect(() => {
     const backAction = () => {
       return true;
@@ -18,8 +19,8 @@ export default function App() {
     return () => backHandler.remove();
   }, []);
   return (
-    <NavigationContainer>
-      <NavigationStack />
-    </NavigationContainer>
+    <AuthProvider>
+      <AppNav />
+    </AuthProvider>
   );
 }

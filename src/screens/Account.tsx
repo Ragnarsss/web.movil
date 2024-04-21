@@ -1,15 +1,29 @@
-import { Text } from "react-native";
-import React from "react";
+import { Button, Text } from "react-native";
+import React, { useContext } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { NavigationProp } from "@react-navigation/native";
+import { AuthContext } from "../context/AuthContext";
 
-const Account = () => {
+const Account = ({ navigation }: { navigation: NavigationProp<any> }) => {
+  const { logout } = useContext(AuthContext)!;
   return (
     <SafeAreaView
       style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
     >
-      <Text>Profile</Text>
+      <Text>Account</Text>
+      <Button
+        title="Profile"
+        onPress={() => {
+          navigation.navigate("Profile");
+        }}
+      />
       <Text>Settings</Text>
-      <Text>Logout</Text>
+      <Button
+        title="Logout"
+        onPress={() => {
+          logout();
+        }}
+      />
     </SafeAreaView>
   );
 };

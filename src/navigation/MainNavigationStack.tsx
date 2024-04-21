@@ -8,10 +8,9 @@ import Jobs from "../screens/MarkUp";
 
 const Tab = createBottomTabNavigator();
 
-const NavigationBottomTab = () => {
+const MainNavigationStack = () => {
   return (
     <Tab.Navigator
-      initialRouteName="Login"
       screenOptions={{
         headerShown: false,
       }}
@@ -54,4 +53,4 @@ function renderTask() {
   );
 }
 
-export default NavigationBottomTab;
+export default MainNavigationStack;
