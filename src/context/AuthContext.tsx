@@ -1,13 +1,17 @@
+import { BaseResponse, User } from "../interfaces/response.interface";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
-import { loginFetch } from "../api/apiService";
+import { loginFetch, registerFetch } from "../api/apiService";
 
 interface AuthContextType {
   isLoading: boolean;
+  register(userName: string, email: string, password: string): void;
   login: (email: string, password: string) => void;
   logout: () => void;
-  user: string | null;
+  user: User | null;
   autorizationToken: string | null;
+  refreshToken: string | null;
 }
 
 interface AuthProviderProps {
@@ -24,31 +28,83 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
-  const login = async (email: string, password: string) => {
+  const register = async (
+    userName: string,
+    email: string,
+    password: string
+  ) => {
     setIsLoading(true);
     try {
-      const response = await loginFetch(email, password);
+      const response = await registerFetch(userName, email, password);
 
-      if (response.statusCode === 200) {
-        await AsyncStorage.setItem(
-          "authorizationToken",
-          response.data.accessToken
-        );
-        await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
-        await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
-        setAutorizationToken(response.data.accessToken);
-        setRefreshToken(response.data.refreshToken);
-        setUser(response.data.user);
+      if ((response.statusCode as number) !== 201) {
+        return {
+          success: false,
+          statusCode: response.statusCode,
+          message: response.message,
+        };
       }
 
-      return response.data;
+      return {
+        success: true,
+        statusCode: response.statusCode,
+        message: response.message,
+      };
     } catch (error) {
       console.log(error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<BaseResponse> => {
+    setIsLoading(true);
+    try {
+      const response = await loginFetch(email, password);
+
+      if (response.statusCode !== 200) {
+        setError(response.message);
+        return {
+          success: false,
+          statusCode: response.statusCode,
+          message: response.message,
+        };
+      }
+      await AsyncStorage.setItem(
+        "authorizationToken",
+        response.data.accessToken
+      );
+      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
+      await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
+      setAutorizationToken(response.data.accessToken);
+      setRefreshToken(response.data.refreshToken);
+      setUser(response.data.user);
+    } catch (error) {
+      if (error instanceof Error) {
+        return {
+          success: false,
+          statusCode: 500,
+          message: error.message,
+        };
+      }
+      return {
+        success: false,
+        statusCode: 500,
+        message: "Unknown error",
+      };
+    } finally {
+      setIsLoading(false);
+    }
+    return {
+      success: false,
+      statusCode: 500,
+      message: "Internal server error",
+    };
   };
 
   const logout = async () => {
@@ -85,7 +141,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   return (
     <AuthContext.Provider
-      value={{ autorizationToken, login, logout, isLoading, user }}
+      value={{
+        autorizationToken,
+        refreshToken,
+        register,
+        login,
+        logout,
+        isLoading,
+        user,
+      }}
     >
       {children}
     </AuthContext.Provider>
