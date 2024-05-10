@@ -1,4 +1,5 @@
 import { StackNavigationProp } from "@react-navigation/stack";
+import { useFormik } from "formik";
 import React, { useState } from "react";
 import {
   Alert,
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Yup from "yup";
 
 type Props = {
   navigation: StackNavigationProp<any>;
@@ -15,6 +17,14 @@ type Props = {
 const ForgotPassword: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState("");
 
+  const formik = useFormik({
+    initialValues: initialValues,
+    validateOnChange: false,
+    onSubmit: () => {
+      Alert.alert("Password reset email sent");
+    },
+    validationSchema: Yup.object(validationSchema),
+  });
   const handleNavigation = (screen: string) => {
     navigation.navigate(screen);
   };
@@ -27,12 +37,10 @@ const ForgotPassword: React.FC<Props> = ({ navigation }) => {
         value={email}
         onChangeText={setEmail}
       />
+      <Text style={styles.error}>{formik.errors.email || ""}</Text>
       <TouchableOpacity
         style={styles.button}
-        onPress={() => {
-          Alert.alert("Password reset email sent");
-          handleNavigation("Login");
-        }}
+        onPress={() => formik.handleSubmit()}
       >
         <Text style={styles.buttonText}>Send Reset Email</Text>
       </TouchableOpacity>
@@ -80,6 +88,21 @@ const styles = StyleSheet.create({
     color: "#1E90FF",
     textDecorationLine: "underline",
   },
+  error: {
+    textAlign: "center",
+    color: "red",
+    marginTop: 10,
+  },
 });
 
 export default ForgotPassword;
+
+const validationSchema = {
+  email: Yup.string()
+    .email("Introduce valid email")
+    .required("Email is required"),
+};
+
+const initialValues = {
+  email: "",
+};
