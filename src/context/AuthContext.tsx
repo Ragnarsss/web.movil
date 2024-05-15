@@ -1,13 +1,16 @@
+import { loginFetch, registerFetch } from "../api/apiService";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
-import { loginFetch } from "../api/apiService";
 
 interface AuthContextType {
   isLoading: boolean;
-  login: (email: string, password: string) => void;
-  logout: () => void;
+  refreshToken: string | null;
   user: string | null;
   autorizationToken: string | null;
+  register: (userName: string, email: string, password: string) => void;
+  login: (email: string, password: string) => void;
+  logout: () => void;
 }
 
 interface AuthProviderProps {
@@ -18,13 +21,26 @@ export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [autorizationToken, setAutorizationToken] = useState<string | null>(
-    null
-  );
+  const [authToken, setAuthToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState<string | null>(null);
+
+  const register = async (
+    userName: string,
+    email: string,
+    password: string
+  ) => {
+    setIsLoading(true);
+    try {
+      await registerFetch(userName, email, password);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const login = async (email: string, password: string) => {
     setIsLoading(true);
@@ -32,18 +48,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const response = await loginFetch(email, password);
 
       if (response.statusCode === 200) {
-        await AsyncStorage.setItem(
-          "authorizationToken",
-          response.data.accessToken
-        );
-        await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
-        await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
-        setAutorizationToken(response.data.accessToken);
-        setRefreshToken(response.data.refreshToken);
-        setUser(response.data.user);
-      }
+        const { user, accessToken, refreshToken } = response.data;
 
-      return response.data;
+        await AsyncStorage.setItem("authToken", accessToken);
+        await AsyncStorage.setItem("refreshToken", refreshToken);
+        await AsyncStorage.setItem("user", JSON.stringify(user));
+
+        setAuthToken(accessToken);
+        setRefreshToken(refreshToken);
+        setUser(user);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -54,10 +68,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = async () => {
     try {
       setIsLoading(true);
-      await AsyncStorage.removeItem("token");
+
+      await AsyncStorage.removeItem("authToken");
       await AsyncStorage.removeItem("refreshToken");
       await AsyncStorage.removeItem("user");
-      setAutorizationToken(null);
+
+      setAuthToken(null);
     } catch (error) {
       setError((error as Error).message);
     } finally {
@@ -68,14 +84,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const checkIfUserIsLoggedIn = async () => {
     try {
       setIsLoading(true);
-      const token = await AsyncStorage.getItem("token");
-      if (token) {
-        setAutorizationToken(token);
-      }
-    } catch (error) {
-      setError((error as Error).message);
-    } finally {
+
+      let token = await AsyncStorage.getItem("authToken");
+      setAutorizationToken(token);
+
       setIsLoading(false);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -83,11 +98,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     checkIfUserIsLoggedIn();
   }, []);
 
+  const contextValue = {
+    refreshToken,
+    authToken,
+    isLoading,
+    user,
+    register,
+    login,
+    logout,
+  };
+
   return (
-    <AuthContext.Provider
-      value={{ autorizationToken, login, logout, isLoading, user }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 };

@@ -10,14 +10,16 @@ interface LoginProps {
 }
 
 const Login: React.FC<LoginProps> = (props) => {
-  const { login, autorizationToken } = useContext(AuthContext)!;
+  const { login } = useContext(AuthContext)!;
   const { navigation } = props;
   const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: initialValues,
     validateOnChange: false,
-    onSubmit: async () => {
-      await login(formik.values.email, formik.values.password);
+    onSubmit: () => {
+      console.log(formik.values, "formik.values");
+
+      login(formik.values.email, formik.values.password);
     },
     validationSchema: Yup.object(validationSchema),
   });

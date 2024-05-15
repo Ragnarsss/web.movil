@@ -4,9 +4,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 import MainNavigationStack from "./MainNavigationStack";
 import AuthStack from "./AuthStack";
+import { useAuth } from "../hooks/useAuth";
 
 const AppNav = () => {
-  const { isLoading, autorizationToken } = useContext(AuthContext)!;
+  const { isLoading, autorizationToken } = useAuth();
 
   if (isLoading) {
     return (
@@ -15,7 +16,6 @@ const AppNav = () => {
       </View>
     );
   }
-  console.log("autorizationToken", autorizationToken);
 
   return (
     <NavigationContainer>

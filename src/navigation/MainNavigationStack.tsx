@@ -7,6 +7,7 @@ import Home from "../screens/Home";
 import Jobs from "../screens/MarkUp";
 import { createStackNavigator } from "@react-navigation/stack";
 import Profile from "../screens/Profile";
+import { useAuth } from "../hooks/useAuth";
 
 const Tab = createBottomTabNavigator();
 const accStack = createStackNavigator();
