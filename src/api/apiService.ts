@@ -32,6 +32,8 @@ export async function registerFetch(
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: requestBody,
+    }).catch((error) => {
+      throw error;
     });
 
     const result = await response.json();

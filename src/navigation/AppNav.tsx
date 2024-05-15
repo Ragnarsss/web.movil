@@ -1,10 +1,9 @@
-import { View, Text, ActivityIndicator } from "react-native";
-import React, { useContext } from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { AuthContext } from "../context/AuthContext";
-import MainNavigationStack from "./MainNavigationStack";
-import AuthStack from "./AuthStack";
+import React from "react";
+import { ActivityIndicator, View } from "react-native";
 import { useAuth } from "../hooks/useAuth";
+import AuthStack from "./AuthStack";
+import MainNavigationStack from "./MainNavigationStack";
 
 const AppNav = () => {
   const { isLoading, autorizationToken } = useAuth();

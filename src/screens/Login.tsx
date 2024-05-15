@@ -1,9 +1,10 @@
+import { AuthContext } from "../context/AuthContext";
+
 import { useFormik } from "formik";
 import React, { useContext, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
-import { AuthContext } from "../context/AuthContext";
 
 interface LoginProps {
   navigation: any;
@@ -17,15 +18,16 @@ const Login: React.FC<LoginProps> = (props) => {
     initialValues: initialValues,
     validateOnChange: false,
     onSubmit: () => {
-      console.log(formik.values, "formik.values");
-
+      setLoading(true);
       login(formik.values.email, formik.values.password);
+      setLoading(false);
     },
     validationSchema: Yup.object(validationSchema),
   });
 
   const handleNavigation = (screen: string) => {
     navigation.navigate(screen);
+    formik.resetForm();
   };
 
   return (
@@ -39,6 +41,7 @@ const Login: React.FC<LoginProps> = (props) => {
           formik.setFieldValue("email", text);
         }}
       />
+      <Text style={styles.error}>{formik.errors.email || ""}</Text>
       <TextInput
         style={styles.input}
         placeholder="password"
@@ -46,9 +49,7 @@ const Login: React.FC<LoginProps> = (props) => {
         onChangeText={(text) => formik.setFieldValue("password", text)}
         secureTextEntry={true}
       />
-      <Text style={styles.error}>
-        {formik.errors.email || formik.errors.password}
-      </Text>
+      <Text style={styles.error}>{formik.errors.password || ""}</Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => formik.handleSubmit()}

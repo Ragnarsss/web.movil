@@ -1,36 +1,35 @@
+import { AuthContext } from "../context/AuthContext";
+
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useFormik } from "formik";
-import React from "react";
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import React, { useContext, useState } from "react";
+import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
-import { useAuth } from "../hooks/useAuth";
 
 type Props = {
   navigation: StackNavigationProp<any>;
 };
 
-const Register: React.FC<Props> = ({ navigation }) => {
-  const { register } = useAuth();
+const Register: React.FC<Props> = () => {
+  const { register } = useContext(AuthContext)!;
+  const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: initialValues,
     validateOnChange: false,
-    onSubmit: async () => {
-      const response = await register(
-        formik.values.usernName,
-        formik.values.email,
-        formik.values.password
-      );
-      if (response.statusCode === 201) {
-        Alert.alert("Register success");
-        navigation.navigate("Login");
+    onSubmit: () => {
+      setLoading(true);
+      console.log("formik.values", formik.values);
+      try {
+        register(
+          formik.values.userName,
+          formik.values.email,
+          formik.values.password
+        );
+      } catch (error) {
+        console.log("error register", error);
       }
+      setLoading(false);
     },
     validationSchema: Yup.object(validationSchema),
   });
@@ -41,27 +40,34 @@ const Register: React.FC<Props> = ({ navigation }) => {
       <TextInput
         style={styles.input}
         placeholder="User name"
-        value={formik.values.usernName}
-        onChangeText={formik.handleChange("usernName")}
+        value={formik.values.userName}
+        onChangeText={(text) => formik.setFieldValue("userName", text)}
       />
+      <Text style={styles.error}>{formik.errors.userName || " "}</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Email"
         value={formik.values.email}
-        onChangeText={formik.handleChange("email")}
+        onChangeText={(text) => formik.setFieldValue("email", text)}
       />
+      <Text style={styles.error}>{formik.errors.email || " "}</Text>
+
       <TextInput
         style={styles.input}
         placeholder="Password"
         secureTextEntry
         value={formik.values.password}
-        onChangeText={formik.handleChange("password")}
+        onChangeText={(text) => formik.setFieldValue("password", text)}
       />
+      <Text style={styles.error}>{formik.errors.password || " "}</Text>
+
       <TouchableOpacity
-        style={styles.button}
+        style={[styles.button, loading ? styles.buttonDisabled : styles.button]}
         onPress={() => {
           formik.handleSubmit();
         }}
+        disabled={loading}
       >
         <Text style={styles.buttonText}>Register</Text>
       </TouchableOpacity>
@@ -100,6 +106,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
   },
+  buttonDisabled: {
+    width: 300,
+    height: 40,
+    backgroundColor: "##A9A9A9",
+    borderRadius: 5,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 20,
+  },
   buttonText: {
     color: "#FFFFFF",
     fontSize: 16,
@@ -109,24 +124,31 @@ const styles = StyleSheet.create({
     color: "#1E90FF",
     textDecorationLine: "underline",
   },
+  error: {
+    textAlign: "center",
+    color: "red",
+    marginTop: 10,
+  },
 });
 
 const initialValues = {
-  usernName: "",
+  userName: "",
   email: "",
   password: "",
 };
 
 const validationSchema = {
-  usernName: Yup.string().min(3).max(32).required("User name is required"),
-  email: Yup.string().email().required("Email is required"),
+  userName: Yup.string().required("User name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
+    .required("Password is required")
+    .min(8, "Password is too short. Minimum 8 characters.")
+    .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .matches(/\d/, "Password must contain at least one number")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-      "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial"
-    )
-    .required("Password is required"),
+      /[^\w\d\s]/,
+      "Password must contain at least one special character (not a space)"
+    ),
 };
 
 export default Register;

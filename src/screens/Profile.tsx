@@ -1,21 +1,12 @@
-import React, { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { SafeAreaView } from "react-native-safe-area-context";
+
+import React, { useContext } from "react";
 import { Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const Profile = () => {
-  const authContext = useContext(AuthContext);
-  let user = null;
-  if (authContext!.user) {
-    user = authContext!.user;
-  }
-  if (!authContext) {
-    return (
-      <SafeAreaView>
-        <Text>Profile PlaceHolder</Text>
-      </SafeAreaView>
-    );
-  }
+  const { user } = useContext(AuthContext)!;
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Text>Email: {user?.email}</Text>

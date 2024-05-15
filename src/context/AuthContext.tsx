@@ -1,16 +1,17 @@
-import { loginFetch, registerFetch } from "../api/apiService";
+import { BaseResponse, User } from "../interfaces/response.interface";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
+import { loginFetch, registerFetch } from "../api/apiService";
 
 interface AuthContextType {
   isLoading: boolean;
-  refreshToken: string | null;
-  user: string | null;
-  autorizationToken: string | null;
-  register: (userName: string, email: string, password: string) => void;
+  register(userName: string, email: string, password: string): void;
   login: (email: string, password: string) => void;
   logout: () => void;
+  user: User | null;
+  autorizationToken: string | null;
+  refreshToken: string | null;
 }
 
 interface AuthProviderProps {
@@ -25,7 +26,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
   const register = async (
     userName: string,
@@ -34,7 +35,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   ) => {
     setIsLoading(true);
     try {
-      await registerFetch(userName, email, password);
+      const response = await registerFetch(userName, email, password);
+
+      if ((response.statusCode as number) !== 201) {
+        return {
+          success: false,
+          statusCode: response.statusCode,
+          message: response.message,
+        };
+      }
+
+      return {
+        success: true,
+        statusCode: response.statusCode,
+        message: response.message,
+      };
     } catch (error) {
       console.log(error);
     } finally {
@@ -42,27 +57,52 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (
+    email: string,
+    password: string
+  ): Promise<BaseResponse> => {
     setIsLoading(true);
     try {
       const response = await loginFetch(email, password);
 
-      if (response.statusCode === 200) {
-        const { user, accessToken, refreshToken } = response.data;
-
-        await AsyncStorage.setItem("authToken", accessToken);
-        await AsyncStorage.setItem("refreshToken", refreshToken);
-        await AsyncStorage.setItem("user", JSON.stringify(user));
-
-        setAuthToken(accessToken);
-        setRefreshToken(refreshToken);
-        setUser(user);
+      if (response.statusCode !== 200) {
+        setError(response.message);
+        return {
+          success: false,
+          statusCode: response.statusCode,
+          message: response.message,
+        };
       }
+      await AsyncStorage.setItem(
+        "authorizationToken",
+        response.data.accessToken
+      );
+      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
+      await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
+      setAutorizationToken(response.data.accessToken);
+      setRefreshToken(response.data.refreshToken);
+      setUser(response.data.user);
     } catch (error) {
-      console.log(error);
+      if (error instanceof Error) {
+        return {
+          success: false,
+          statusCode: 500,
+          message: error.message,
+        };
+      }
+      return {
+        success: false,
+        statusCode: 500,
+        message: "Unknown error",
+      };
     } finally {
       setIsLoading(false);
     }
+    return {
+      success: false,
+      statusCode: 500,
+      message: "Internal server error",
+    };
   };
 
   const logout = async () => {
@@ -109,6 +149,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
+    <AuthContext.Provider
+      value={{
+        autorizationToken,
+        refreshToken,
+        register,
+        login,
+        logout,
+        isLoading,
+        user,
+      }}
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };
