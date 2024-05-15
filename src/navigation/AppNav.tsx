@@ -6,7 +6,7 @@ import AuthStack from "./AuthStack";
 import MainNavigationStack from "./MainNavigationStack";
 
 const AppNav = () => {
-  const { isLoading, autorizationToken } = useAuth();
+  const { isLoading, authToken } = useAuth();
 
   if (isLoading) {
     return (
@@ -18,7 +18,7 @@ const AppNav = () => {
 
   return (
     <NavigationContainer>
-      {autorizationToken != null ? <MainNavigationStack /> : <AuthStack />}
+      {authToken != null ? <MainNavigationStack /> : <AuthStack />}
     </NavigationContainer>
   );
 };

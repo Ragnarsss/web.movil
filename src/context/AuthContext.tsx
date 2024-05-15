@@ -10,7 +10,7 @@ interface AuthContextType {
   login: (email: string, password: string) => void;
   logout: () => void;
   user: User | null;
-  autorizationToken: string | null;
+  authToken: string | null;
   refreshToken: string | null;
 }
 
@@ -73,13 +73,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           message: response.message,
         };
       }
-      await AsyncStorage.setItem(
-        "authorizationToken",
-        response.data.accessToken
-      );
+      await AsyncStorage.setItem("authToken", response.data.accessToken);
       await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
       await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
-      setAutorizationToken(response.data.accessToken);
+      setAuthToken(response.data.accessToken);
       setRefreshToken(response.data.refreshToken);
       setUser(response.data.user);
     } catch (error) {
@@ -126,7 +123,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setIsLoading(true);
 
       let token = await AsyncStorage.getItem("authToken");
-      setAutorizationToken(token);
+      setAuthToken(token);
 
       setIsLoading(false);
     } catch (error) {
@@ -151,13 +148,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   return (
     <AuthContext.Provider
       value={{
-        autorizationToken,
-        refreshToken,
-        register,
-        login,
-        logout,
-        isLoading,
-        user,
+        ...contextValue,
       }}
     >
       {children}
