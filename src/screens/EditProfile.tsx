@@ -1,47 +1,65 @@
-import { AuthContext } from "../context/AuthContext";
-
-import { useFormik } from "formik";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { useContext, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
+import { TextInput } from "react-native-gesture-handler";
+import { useFormik } from "formik";
+import { AuthContext } from "../context/AuthContext";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-interface LoginProps {
-  navigation: any;
-}
-
-const Login: React.FC<LoginProps> = (props) => {
-  const { login } = useContext(AuthContext)!;
-  const { navigation } = props;
+const EditProfile = () => {
   const [loading, setLoading] = useState(false);
+
+  const { user, isLoading } = useContext(AuthContext)!;
+  const initialValues = {
+    name: user?.name || "",
+    lastName: user?.lastName || "",
+    userName: user?.userName || "",
+    email: user?.email || "",
+    password: "Password",
+  };
+
   const formik = useFormik({
     initialValues: initialValues,
     validateOnChange: false,
     onSubmit: () => {
       setLoading(true);
-      login(formik.values.email, formik.values.password);
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     },
-    validationSchema: Yup.object(validationSchema),
+    validationSchema: validationSchema,
   });
-
-  const handleNavigation = (screen: string) => {
-    navigation.navigate(screen);
-    formik.resetForm();
-  };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Login</Text>
       <TextInput
-        style={styles.input}
-        placeholder="email"
+        style={[styles.input, !formik.values.email && { color: "gray" }]}
         value={formik.values.email}
-        onChangeText={(text) => {
-          formik.setFieldValue("email", text);
-        }}
+        editable={false}
+        pointerEvents="none"
       />
       <Text style={styles.error}>{formik.errors.email || ""}</Text>
+      <TextInput
+        style={[styles.input, !formik.values.userName && { color: "gray" }]}
+        value={formik.values.userName}
+        editable={false}
+        pointerEvents="none"
+      />
+      <Text style={styles.error}>{formik.errors.userName || ""}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Name"
+        value={formik.values.name}
+        onChangeText={(text) => formik.setFieldValue("name", text)}
+      />
+      <Text style={styles.error}>{formik.errors.name || ""}</Text>
+      <TextInput
+        style={styles.input}
+        placeholder="Last Name"
+        value={formik.values.lastName}
+        onChangeText={(text) => formik.setFieldValue("lastName", text)}
+      />
+      <Text style={styles.error}>{formik.errors.lastName || ""}</Text>
       <TextInput
         style={styles.input}
         placeholder="password"
@@ -56,28 +74,14 @@ const Login: React.FC<LoginProps> = (props) => {
         disabled={loading}
       >
         <Text style={[styles.buttonText, loading && { color: "lightgray" }]}>
-          Login
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => handleNavigation("Register")}
-        disabled={loading}
-      >
-        <Text style={[styles.link, loading && { color: "gray" }]}>
-          Register
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={() => handleNavigation("ForgotPassword")}
-        disabled={loading}
-      >
-        <Text style={[styles.link, loading && { color: "gray" }]}>
-          Forgot Password?
+          {loading ? "Enviando..." : "Enviar cambios"}
         </Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
 };
+
+export default EditProfile;
 
 const styles = StyleSheet.create({
   container: {
@@ -124,21 +128,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-export default Login;
-
-const initialValues = {
-  email: "",
-  password: "",
-};
-
-const validationSchema = {
-  email: Yup.string().email().required("Email is required"),
-  password: Yup.string()
-    .min(8, "La contraseña debe tener al menos 8 caracteres")
-    .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-      "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial"
-    )
-    .required("Password is required"),
-};
+const validationSchema = Yup.object().shape({
+  name: Yup.string(),
+  lastName: Yup.string(),
+  userName: Yup.string(),
+  password: Yup.string().required("Required"),
+});

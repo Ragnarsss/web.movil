@@ -1,13 +1,22 @@
-import { Text } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
+import { Button, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { DarkModeContext } from "../context/DarkModeContext";
 
 const Settings = () => {
+  const { isDarkMode, toggleDarkMode } = useContext(DarkModeContext);
+
   return (
     <SafeAreaView
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: isDarkMode ? "black" : "white",
+      }}
     >
-      <Text>Settings</Text>
+      <Text style={{ color: isDarkMode ? "white" : "black" }}>Settings</Text>
+      <Button title="Toggle Dark Mode" onPress={toggleDarkMode} />
     </SafeAreaView>
   );
 };

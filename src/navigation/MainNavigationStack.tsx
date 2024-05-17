@@ -1,43 +1,20 @@
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React from "react";
-import Account from "../screens/Account";
-import Icon from "react-native-vector-icons/FontAwesome5";
-import { Image } from "react-native";
 import Home from "../screens/Home";
 import Jobs from "../screens/MarkUp";
-import { createStackNavigator } from "@react-navigation/stack";
-import Profile from "../screens/Profile";
-import { useAuth } from "../hooks/useAuth";
+import AccountStack from "./AccountStack";
+
+import React from "react";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Image } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome5";
 
 const Tab = createBottomTabNavigator();
-const accStack = createStackNavigator();
-
-const AccountNavigator = () => {
-  return (
-    <accStack.Navigator
-      initialRouteName="Account"
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <accStack.Screen name="Account" component={Account} />
-      <accStack.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          title: "Profile",
-          headerShown: true,
-        }}
-      />
-    </accStack.Navigator>
-  );
-};
 
 const MainNavigationStack = () => {
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+        tabBarHideOnKeyboard: true,
       }}
       initialRouteName="Home"
     >
@@ -58,8 +35,8 @@ const MainNavigationStack = () => {
         }}
       />
       <Tab.Screen
-        name="Account2"
-        component={AccountNavigator}
+        name="Account"
+        component={AccountStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Icon name="user" size={size} color={color} />

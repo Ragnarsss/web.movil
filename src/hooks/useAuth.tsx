@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { User } from "../interfaces/response.interface";
 
 type AuthContextType = {
   isLoading: boolean;
   refreshToken: string | null;
-  user: string | null;
-  autorizationToken: string | null;
+  user: User | null;
+  authToken: string | null;
   register: (userName: string, email: string, password: string) => void;
   login: (email: string, password: string) => void;
   logout: () => void;
