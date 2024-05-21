@@ -1,7 +1,9 @@
-import { Account, EditProfile, Profile, Settings } from "../screens";
-
 import { createStackNavigator } from "@react-navigation/stack";
-
+import React from "react";
+import { Account } from "./Account";
+import { Profile } from "./Profile";
+import { EditProfile } from "./EditProfile";
+import { Settings } from "./Settings";
 const accStack = createStackNavigator();
 
 export const AccountStack = () => {

@@ -1,4 +1,3 @@
-import { Home } from "../screens";
 import { MarkUp } from "../markup";
 import { AccountStack } from "../account";
 
@@ -6,6 +5,7 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Image } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import { Home } from "../Home";
 
 const Tab = createBottomTabNavigator();
 

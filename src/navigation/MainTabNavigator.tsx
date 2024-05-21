@@ -1,11 +1,11 @@
 import Icon from "react-native-vector-icons/FontAwesome";
 import { AccountStack } from "../account";
 import { MarkUp } from "../markup";
-import { Home } from "../screens";
 
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { Image } from "react-native";
+import { Home } from "../Home";
 
 const Tab = createBottomTabNavigator();
 

@@ -1,41 +1,21 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import { MarkSlot } from "./MarkSlot";
+
+import React from "react";
+import { Button, StyleSheet, Text, View } from "react-native";
 
 export const ShiftCard = () => {
-  const [morningStart, setMorningStart] = useState("08:00");
-  const [morningEnd, setMorningEnd] = useState("12:00");
-  const [afternoonStart, setAfternoonStart] = useState("14:00");
-  const [afternoonEnd, setAfternoonEnd] = useState("18:00");
-  const [overtimeStart, setOvertimeStart] = useState("20:00");
-  const [overtimeEnd, setOvertimeEnd] = useState("22:00");
-
   return (
     <View style={styles.card}>
       <Text style={styles.title}>Turno</Text>
       <View style={styles.row}>
-        <Text style={styles.label}>Entrada Mañana:</Text>
-        <Text style={styles.value}>{morningStart}</Text>
+        <MarkSlot status="notMarked" />
+        <MarkSlot status="notMarked" />
+        <MarkSlot status="notMarked" />
+        <MarkSlot status="notMarked" />
+        <MarkSlot status="notMarked" />
+        <MarkSlot status="notMarked" />
       </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Salida Mañana:</Text>
-        <Text style={styles.value}>{morningEnd}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Entrada Tarde:</Text>
-        <Text style={styles.value}>{afternoonStart}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Salida Tarde:</Text>
-        <Text style={styles.value}>{afternoonEnd}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Inicio Horas Extras:</Text>
-        <Text style={styles.value}>{overtimeStart}</Text>
-      </View>
-      <View style={styles.row}>
-        <Text style={styles.label}>Fin Horas Extras:</Text>
-        <Text style={styles.value}>{overtimeEnd}</Text>
-      </View>
+      <Button title="Marcar" />
     </View>
   );
 };
@@ -59,10 +39,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    alignSelf: "center",
   },
   row: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     marginBottom: 5,
   },
   label: {
