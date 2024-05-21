@@ -19,7 +19,6 @@ export const Register: React.FC<Props> = () => {
     validateOnChange: false,
     onSubmit: () => {
       setLoading(true);
-      console.log("formik.values", formik.values);
       try {
         register(
           formik.values.userName,

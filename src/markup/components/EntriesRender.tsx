@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { FlatList, StyleSheet } from "react-native";
 
 export const EntriesRender = () => {
+  //esta data en realidad viene de la api y se guarda en el estado
+  //o quizas venga de un contexto que tenga que ver con la informacion de los turnos del usuario+5
   const [data, setData] = useState(Array.from({ length: 20 }));
 
   return (
