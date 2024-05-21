@@ -1,14 +1,15 @@
+import Icon from "react-native-vector-icons/FontAwesome";
+import { AccountStack } from "../account";
+import { MarkUp } from "../markup";
+import { Home } from "../screens";
+
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { Image } from "react-native";
-import { Icon } from "react-native-vector-icons/Icon";
-import Home from "../screens/Home";
-import MarkUp from "../screens/MarkUp";
-import AccountStack from "./AccountStack";
 
 const Tab = createBottomTabNavigator();
 
-const MainTabNavigator = () => {
+export const MainTabNavigator = () => {
   return (
     <Tab.Navigator
       // screenOptions={{
@@ -53,5 +54,3 @@ function renderTask() {
     />
   );
 }
-
-export default MainTabNavigator;

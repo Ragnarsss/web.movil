@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { BackHandler } from "react-native";
 import "react-native-gesture-handler";
-import { AuthProvider } from "./src/context/AuthContext";
-import AppNav from "./src/navigation/AppNav";
+import { AuthProvider } from "./src/context";
+import { AppNav } from "./src/navigation";
 
 export default function App() {
   useEffect(() => {

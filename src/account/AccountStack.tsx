@@ -1,13 +1,10 @@
-import Account from "../screens/Account";
-import Profile from "../screens/Profile";
-import EditProfile from "../screens/EditProfile";
+import { Account, EditProfile, Profile, Settings } from "../screens";
 
 import { createStackNavigator } from "@react-navigation/stack";
-import Settings from "../screens/Settings";
 
 const accStack = createStackNavigator();
 
-const AccountStack = () => {
+export const AccountStack = () => {
   return (
     <accStack.Navigator
       initialRouteName="AccountMenu"
@@ -44,5 +41,3 @@ const AccountStack = () => {
     </accStack.Navigator>
   );
 };
-
-export default AccountStack;

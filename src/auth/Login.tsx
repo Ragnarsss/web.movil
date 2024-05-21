@@ -10,7 +10,7 @@ interface LoginProps {
   navigation: any;
 }
 
-const Login: React.FC<LoginProps> = (props) => {
+export const Login: React.FC<LoginProps> = (props) => {
   const { login } = useContext(AuthContext)!;
   const { navigation } = props;
   const [loading, setLoading] = useState(false);
@@ -124,8 +124,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-export default Login;
 
 const initialValues = {
   email: "",

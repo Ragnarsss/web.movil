@@ -1,13 +1,12 @@
-import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Login from "../screens/Login";
-import NavigationBottomTab from "./MainNavigationStack";
-import Register from "../screens/Register";
-import ForgotPassword from "../screens/ForgotPassword";
+import React from "react";
+import { ForgotPassword } from "./ForgotPassword";
+import { Login } from "./Login";
+import { Register } from "./Register";
 
 const Stack = createStackNavigator();
 
-const AuthStack = () => {
+export const AuthStack = () => {
   return (
     <Stack.Navigator
       initialRouteName="Login"
@@ -32,9 +31,6 @@ const AuthStack = () => {
           headerShown: true,
         }}
       />
-      <Stack.Screen name="Main" component={NavigationBottomTab} />
     </Stack.Navigator>
   );
 };
-
-export default AuthStack;

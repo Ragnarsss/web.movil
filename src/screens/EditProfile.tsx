@@ -1,12 +1,13 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useContext, useState } from "react";
-import * as Yup from "yup";
-import { TextInput } from "react-native-gesture-handler";
-import { useFormik } from "formik";
 import { AuthContext } from "../context/AuthContext";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-const EditProfile = () => {
+import { useFormik } from "formik";
+import React, { useContext, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import { SafeAreaView } from "react-native-safe-area-context";
+import * as Yup from "yup";
+
+export const EditProfile = () => {
   const [loading, setLoading] = useState(false);
 
   const { user, isLoading } = useContext(AuthContext)!;
@@ -80,8 +81,6 @@ const EditProfile = () => {
     </SafeAreaView>
   );
 };
-
-export default EditProfile;
 
 const styles = StyleSheet.create({
   container: {

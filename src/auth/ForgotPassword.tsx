@@ -14,7 +14,7 @@ import * as Yup from "yup";
 type Props = {
   navigation: StackNavigationProp<any>;
 };
-const ForgotPassword: React.FC<Props> = ({ navigation }) => {
+export const ForgotPassword: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState("");
 
   const formik = useFormik({
@@ -94,8 +94,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 });
-
-export default ForgotPassword;
 
 const validationSchema = {
   email: Yup.string()

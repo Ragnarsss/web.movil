@@ -1,6 +1,6 @@
-import Home from "../screens/Home";
-import Jobs from "../screens/MarkUp";
-import AccountStack from "./AccountStack";
+import { Home } from "../screens";
+import { MarkUp } from "../markup";
+import { AccountStack } from "../account";
 
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
@@ -9,7 +9,7 @@ import Icon from "react-native-vector-icons/FontAwesome5";
 
 const Tab = createBottomTabNavigator();
 
-const MainNavigationStack = () => {
+export const MainNavigationStack = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -29,7 +29,7 @@ const MainNavigationStack = () => {
       />
       <Tab.Screen
         name="Marks"
-        component={Jobs}
+        component={MarkUp}
         options={{
           tabBarIcon: () => renderTask(),
         }}
@@ -55,5 +55,3 @@ function renderTask() {
     />
   );
 }
-
-export default MainNavigationStack;

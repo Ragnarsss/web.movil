@@ -1,11 +1,12 @@
+import { AuthStack } from "../auth/AuthStack";
+import { useAuth } from "../hooks/useAuth";
+import { MainNavigationStack } from "./MainNavigationStack";
+
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
 import { ActivityIndicator, View } from "react-native";
-import { useAuth } from "../hooks/useAuth";
-import AuthStack from "./AuthStack";
-import MainNavigationStack from "./MainNavigationStack";
 
-const AppNav = () => {
+export const AppNav = () => {
   const { isLoading, authToken } = useAuth();
 
   if (isLoading) {
@@ -22,5 +23,3 @@ const AppNav = () => {
     </NavigationContainer>
   );
 };
-
-export default AppNav;

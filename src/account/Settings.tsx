@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import { Button, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { DarkModeContext } from "../context/DarkModeContext";
+import { DarkModeContext } from "../context";
 
-const Settings = () => {
+export const Settings = () => {
   const { isDarkMode, toggleDarkMode } = useContext(DarkModeContext);
 
   return (
@@ -20,5 +20,3 @@ const Settings = () => {
     </SafeAreaView>
   );
 };
-
-export default Settings;

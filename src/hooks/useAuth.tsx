@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext";
 import { User } from "../interfaces/response.interface";
+import { AuthContext } from "../context";
 
 type AuthContextType = {
   isLoading: boolean;

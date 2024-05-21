@@ -11,7 +11,7 @@ type Props = {
   navigation: StackNavigationProp<any>;
 };
 
-const Register: React.FC<Props> = () => {
+export const Register: React.FC<Props> = () => {
   const { register } = useContext(AuthContext)!;
   const [loading, setLoading] = useState(false);
   const formik = useFormik({
@@ -150,5 +150,3 @@ const validationSchema = {
       "Password must contain at least one special character (not a space)"
     ),
 };
-
-export default Register;

@@ -13,7 +13,11 @@ import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const Profile = ({ navigation }: { navigation: NavigationProp<any> }) => {
+export const Profile = ({
+  navigation,
+}: {
+  navigation: NavigationProp<any>;
+}) => {
   const { user } = useContext(AuthContext)!;
 
   const fullName = `${user?.name !== null ? user?.name : "Nombre"} ${
@@ -95,5 +99,3 @@ const styles = StyleSheet.create({
     padding: 10,
   },
 });
-
-export default Profile;

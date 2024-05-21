@@ -1,10 +1,15 @@
+import { AuthContext } from "../context/AuthContext";
+
 import { NavigationProp } from "@react-navigation/native";
 import React, { useContext } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { AuthContext } from "../context/AuthContext";
 
-const Account = ({ navigation }: { navigation: NavigationProp<any> }) => {
+export const Account = ({
+  navigation,
+}: {
+  navigation: NavigationProp<any>;
+}) => {
   const { logout } = useContext(AuthContext)!;
   return (
     <SafeAreaView style={styles.container}>
@@ -56,5 +61,3 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 });
-
-export default Account;
