@@ -1,10 +1,7 @@
+import { FiltersModalProps } from "../../interfaces/props.interface";
+
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React, { FC } from "react";
-
-interface FiltersModalProps {
-  modalVisible: boolean;
-  setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-}
 
 export const FiltersModal: FC<FiltersModalProps> = ({
   modalVisible,

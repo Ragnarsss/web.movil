@@ -1,11 +1,7 @@
-import React, { FC, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { MarkSlotProps } from "../../interfaces/props.interface";
 
-interface MarkSlotProps {
-  status: "marked" | "notMarked" | "late";
-  showTime?: boolean;
-  markTime?: string;
-}
+import React, { FC } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
 export const MarkSlot: FC<MarkSlotProps> = ({
   status = "notMarked",
