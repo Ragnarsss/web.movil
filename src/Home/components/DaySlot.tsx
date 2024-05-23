@@ -1,10 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { FC } from "react";
 
-interface DaySlotProps {
-  WeekDay: string;
-}
-
 export const DaySlot = () => {
   return (
     <View style={styles.markDay}>

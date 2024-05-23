@@ -1,24 +1,16 @@
-import { BaseResponse, User } from "../interfaces/response.interface";
+import { updateAccountFetch } from "../account/AccountService";
+import { loginFetch, registerFetch } from "../auth/LoginService";
+import { User } from "../interfaces/apiModels.interface";
+import {
+  AuthContextProps,
+  AuthProviderProps,
+} from "../interfaces/props.interface";
+import { BaseResponse } from "../interfaces/response.interface";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import React, { ReactNode, createContext, useEffect, useState } from "react";
-import { loginFetch, registerFetch } from "../api/apiService";
+import React, { createContext, useEffect, useState } from "react";
 
-interface AuthContextType {
-  isLoading: boolean;
-  register(userName: string, email: string, password: string): void;
-  login: (email: string, password: string) => void;
-  logout: () => void;
-  user: User | null;
-  authToken: string | null;
-  refreshToken: string | null;
-}
-
-interface AuthProviderProps {
-  children: ReactNode;
-}
-
-export const AuthContext = createContext<AuthContextType | undefined>(
+export const AuthContext = createContext<AuthContextProps | undefined>(
   undefined
 );
 export const AuthProvider = ({ children }: AuthProviderProps) => {
@@ -130,6 +122,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const updateUser = async (user: User) => {
+    const response = await updateAccountFetch(user);
+  };
+
   const checkIfUserIsLoggedIn = async () => {
     try {
       setIsLoading(true);
@@ -155,6 +151,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     register,
     login,
     logout,
+    updateUser,
   };
 
   return (

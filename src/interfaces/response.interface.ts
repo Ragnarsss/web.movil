@@ -1,12 +1,4 @@
-interface User {
-  id: string;
-  name: string;
-  lastName: string;
-  userName: string;
-  email: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { User } from "./apiModels.interface";
 
 interface CheckedUser {
   user: User;
@@ -20,4 +12,4 @@ interface BaseResponse {
   message: string;
 }
 
-export { User, CheckedUser, BaseResponse };
+export { CheckedUser, BaseResponse };

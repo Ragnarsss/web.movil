@@ -59,18 +59,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
   },
   dateView: {
     flexDirection: "column",
-    padding: 2, // Añade este padding
-    justifyContent: "center", // Añade esta línea para centrar el texto verticalmente
+    padding: 2,
+    justifyContent: "center",
   },
   timeCardText: {
-    padding: 10, // Añade este padding
+    padding: 10,
   },
   contentView: {
     height: 20,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "",
     padding: 5,
     flexDirection: "row",
     justifyContent: "space-between",

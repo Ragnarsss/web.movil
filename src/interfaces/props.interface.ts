@@ -1,3 +1,7 @@
+import { User } from "./apiModels.interface";
+
+import { ReactNode } from "react";
+
 interface MarkSlotProps {
   status: "marked" | "notMarked" | "late";
   showTime?: boolean;
@@ -8,4 +12,28 @@ interface FiltersModalProps {
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export { MarkSlotProps, FiltersModalProps };
+interface DaySlotProps {
+  WeekDay: string;
+}
+
+interface AuthContextProps {
+  isLoading: boolean;
+  refreshToken: string | null;
+  user: User | null;
+  authToken: string | null;
+  register: (userName: string, email: string, password: string) => void;
+  login: (email: string, password: string) => void;
+  logout: () => void;
+}
+
+interface AuthProviderProps {
+  children: ReactNode;
+}
+
+export {
+  MarkSlotProps,
+  FiltersModalProps,
+  DaySlotProps,
+  AuthContextProps,
+  AuthProviderProps,
+};
