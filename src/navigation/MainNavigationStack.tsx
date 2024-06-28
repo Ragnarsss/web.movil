@@ -41,6 +41,7 @@ export const MainNavigationStack = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="user" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

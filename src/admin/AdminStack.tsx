@@ -1,10 +1,9 @@
 import { createStackNavigator } from "@react-navigation/stack";
 import React from "react";
 
-import Graphs from "./Graphs";
 import AdminPanel from "./AdminPanel";
-import Seraching from "./AdminUsers";
 import AdminUsers from "./AdminUsers";
+import Graphs from "./Graphs";
 const adminStack = createStackNavigator();
 
 export const AdminStack = () => {
@@ -12,7 +11,7 @@ export const AdminStack = () => {
     <adminStack.Navigator
       initialRouteName="Searching"
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
     >
       <adminStack.Screen name="AdminPanel" component={AdminPanel} />
@@ -30,7 +29,7 @@ export const AdminStack = () => {
         component={AdminUsers}
         options={{
           title: "Search",
-          headerShown: false,
+          headerShown: true,
         }}
       />
     </adminStack.Navigator>

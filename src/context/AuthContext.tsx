@@ -3,8 +3,8 @@ import { BaseResponse } from "../interfaces/response.interface";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
 import { fetchRefreshAuth, loginFetch, registerFetch } from "../api/apiService";
-import { AuthContextType, User } from "../interfaces/props.interface";
 import { roles } from "../common/enum";
+import { AuthContextType } from "../interfaces/props.interface";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -16,7 +16,7 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
-  const [role, setRole] = useState<roles>(roles.WORKER);
+  const [role, setRole] = useState<roles | null>(null);
   const [email, setEmail] = useState<string | null>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -148,19 +148,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const checkIfUserIsLoggedIn = async () => {
-    try {
-      setIsLoading(true);
-
-      let token = await AsyncStorage.getItem("authToken");
-      setAuthToken(token);
-
-      setIsLoading(false);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const refreshAuthToken = async (): Promise<BaseResponse> => {
     setIsLoading(true);
     try {
@@ -182,9 +169,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         };
       }
 
+      console.log("mewTok", response.data.accessToken);
+
       await AsyncStorage.setItem("authToken", response.data.accessToken);
 
-      setAuthToken(response.data.accessToken);
+      setAuthToken(response.data.access_token);
     } catch (error) {
       console.log(error);
     } finally {
@@ -195,6 +184,27 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       statusCode: 500,
       message: "Internal server error",
     };
+  };
+  const checkIfUserIsLoggedIn = async () => {
+    try {
+      setIsLoading(true);
+
+      let authToken = await AsyncStorage.getItem("authToken");
+      setAuthToken(authToken);
+
+      let refreshToken = await AsyncStorage.getItem("refreshToken");
+      setRefreshToken(refreshToken);
+
+      let role = await AsyncStorage.getItem("role");
+      setRole(role as roles);
+
+      let email = await AsyncStorage.getItem("email");
+      setEmail(email);
+
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

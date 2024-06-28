@@ -8,12 +8,19 @@ import Graphs from "./Graphs";
 import AdminCards from "./AdminCards";
 import PopUpMenu from "./components/PopUpMenu";
 import AdminUsers from "./AdminUsers";
+import { COLORS } from "../constants";
 
 const Tab = createBottomTabNavigator();
 
 export const AdminTab = () => {
   return (
-    <Tab.Navigator screenOptions={{}} initialRouteName="Graphics">
+    <Tab.Navigator
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: COLORS.primary,
+      }}
+      initialRouteName="Graphics"
+    >
       <Tab.Screen
         name="Graphics"
         component={Graphs}
@@ -31,6 +38,7 @@ export const AdminTab = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="user" size={size} color={color} />
           ),
+          headerShown: true,
           headerRight: () => <PopUpMenu />,
         }}
       />

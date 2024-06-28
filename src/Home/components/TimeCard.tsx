@@ -1,7 +1,14 @@
-import React, { FC } from "react";
-import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import React, { FC, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
 import TimeCardEntry from "./TimeCardEntry";
 import { TimeCardEntryType, User } from "../../interfaces/props.interface";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 interface TimeCardProps {
   id: string;
@@ -18,26 +25,76 @@ export const TimeCard: FC<TimeCardProps> = ({
   periodEnd,
   user,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   // Formatea las fechas y horas
-  const startDateTime = new Date(periodStart).toLocaleString();
-  const endDateTime = new Date(periodEnd).toLocaleString();
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+  const startDateTime = dateFormatter.format(new Date(periodStart));
+  const endDateTime = dateFormatter.format(new Date(periodEnd));
+
+  // Split ID
+  const displayId = id.split("-")[0];
+
   return (
     <SafeAreaView style={styles.timeCard}>
-      <Text>Time Card ID: {id}</Text>
+      <Text style={styles.sectionTitle}>Time Card ID: {displayId}</Text>
       <View style={styles.headerView}>
-        <Text style={styles.timeCardText}>
+        <Text style={styles.userText}>
           User: {user.userName ? user.userName : user.email}
         </Text>
         <View style={styles.dateView}>
-          <Text>Period Start: {startDateTime}</Text>
-          <Text>Period End: {endDateTime}</Text>
+          <Text style={styles.dateText}>Period Start: {startDateTime}</Text>
+          <Text style={styles.dateText}>Period End: {endDateTime}</Text>
         </View>
       </View>
-      <View style={styles.contentView}>
-        {entries.map((entry, index) => (
-          <TimeCardEntry key={index} entry={entry} />
-        ))}
-      </View>
+      <TouchableOpacity
+        style={[styles.contentView, { justifyContent: "flex-start" }]} // Asegura que el contenido comience desde la izquierda
+        onPress={() => setIsExpanded(!isExpanded)}
+      >
+        {isExpanded ? (
+          <>
+            <View
+              style={[
+                styles.sectionTitle,
+                {
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "100%",
+                },
+              ]}
+            >
+              <Text>Hide entries</Text>
+              <MaterialIcons name="expand-less" size={24} color="#FFF" />
+            </View>
+            {entries.length === 0 ? (
+              <Text style={styles.NotFoundText}>No entries found</Text>
+            ) : (
+              entries.map((entry, index) => (
+                <TimeCardEntry key={index} entry={entry} />
+              ))
+            )}
+          </>
+        ) : (
+          <View
+            style={[
+              styles.sectionTitle,
+              {
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                width: "100%",
+              },
+            ]}
+          >
+            <Text>Show entries</Text>
+            <MaterialIcons name="expand-more" size={24} color="#FFF" />
+          </View>
+        )}
+      </TouchableOpacity>
     </SafeAreaView>
   );
 };
@@ -45,41 +102,63 @@ export const TimeCard: FC<TimeCardProps> = ({
 const styles = StyleSheet.create({
   timeCard: {
     width: "90%",
-    height: 200,
-    backgroundColor: "#FFFFFF",
-    borderRadius: 10,
+    height: "auto",
+    backgroundColor: "#6e48aa",
+    borderRadius: 20,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.37,
+    shadowRadius: 7.49,
+    elevation: 12,
     marginBottom: 20,
+    padding: 10,
+    minWidth: 350,
+    maxWidth: "auto",
   },
   headerView: {
-    height: 50,
-    backgroundColor: "#D3D3D3",
-    paddingHorizontal: 10,
+    backgroundColor: "#9d50bb",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 15,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: 10,
   },
   dateView: {
     flexDirection: "column",
-    padding: 2, // Añade este padding
-    justifyContent: "center", // Añade esta línea para centrar el texto verticalmente
+    justifyContent: "center",
   },
   timeCardText: {
-    padding: 10, // Añade este padding
+    color: "#FFFFFF",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   contentView: {
-    height: "auto",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "transparent",
     padding: 5,
     flexDirection: "row",
-    justifyContent: "space-between",
     flexWrap: "wrap",
+    justifyContent: "center",
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#FFF",
+    marginBottom: 5,
+  },
+  userText: {
+    fontSize: 16,
+    color: "#FFF",
+    fontWeight: "bold",
+  },
+  dateText: {
+    fontSize: 14,
+    color: "#FFF",
+  },
+  NotFoundText: {
+    fontSize: 16,
+    color: "#FFF",
+    fontWeight: "bold",
   },
 });

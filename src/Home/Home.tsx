@@ -1,13 +1,37 @@
+import { useFocusEffect } from "@react-navigation/native";
 import { TimeCardsRender } from "./components";
 
-import React from "react";
-import { ScrollView, StyleSheet } from "react-native";
+import React, { useCallback, useState } from "react";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { fetchTimeCards } from "../api/apiService";
+import { useAuth } from "../hooks/useAuth";
+import { TimeCardType } from "../interfaces/props.interface";
 
 export const Home = () => {
+  const { authToken, refreshToken } = useAuth();
+  const [timeCards, setTimeCards] = useState<TimeCardType[]>([]);
+
+  const fetchEntries = async (attempt = 1) => {
+    try {
+      const response = await fetchTimeCards(authToken as string);
+      setTimeCards(response.data);
+    } catch (error) {
+      console.error("Error fetching cards:", error);
+      alert(error);
+    } finally {
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchEntries();
+    }, [])
+  );
+
   return (
     <SafeAreaView style={styles.container}>
-      <TimeCardsRender />
+      <TimeCardsRender timeCards={timeCards} />
     </SafeAreaView>
   );
 };

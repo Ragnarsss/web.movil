@@ -5,6 +5,7 @@ import { fetchAllTimeCards } from "../api/apiService";
 import { useAuth } from "../hooks/useAuth";
 import { TimeCardType } from "../interfaces/props.interface";
 import AdminTimeCardsRender from "./components/AdminTimeCardsRender";
+import { COLORS } from "../constants";
 
 const AdminCards = () => {
   const { authToken, refreshToken, refreshAuthToken } = useAuth();
@@ -13,35 +14,42 @@ const AdminCards = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const refreshTokenAndRetry = async (attempt: number) => {
+    try {
+      const refreshResponse = await refreshAuthToken(refreshToken as string);
+      if (refreshResponse.success) {
+        await fetchCards(attempt);
+      } else {
+        setError("Error refreshing token");
+        alert("Error refreshing token");
+      }
+    } catch (error) {
+      console.error("Error refreshing token:", error);
+      setError("Error refreshing token");
+      alert("Error refreshing token");
+    }
+  };
+
   const fetchCards = async (attempt = 1) => {
     setIsLoading(true);
     setError("");
     try {
       const response = await fetchAllTimeCards(authToken as string);
-      const cards = response.data;
-      setCardsData(cards);
-
       if (response.statusCode === 401) {
         if (attempt <= 3) {
-          // Limita el número de intentos a 3
-          const refreshResponse = await refreshAuthToken(
-            refreshToken as string
-          );
-          if (refreshResponse.success) {
-            fetchCards(attempt + 1); // Incrementa el intento y reintentar
-          } else {
-            setError("Error refreshing token");
-            alert(error);
-          }
+          await refreshTokenAndRetry(attempt + 1);
         } else {
           setError("Max retry attempts reached");
-          alert(error);
+          alert("Max retry attempts reached");
         }
+      } else {
+        const cards = response.data;
+        setCardsData(cards);
       }
     } catch (error) {
       console.error("Error fetching cards:", error);
       setError("Error fetching cards");
-      alert(error);
+      alert("Error fetching cards");
     } finally {
       setIsLoading(false);
     }
@@ -56,9 +64,9 @@ const AdminCards = () => {
   );
 
   return (
-    <View>
+    <View style={{ paddingTop: 50 }}>
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={COLORS.tertiary} />
       ) : error ? (
         <Text>Error</Text>
       ) : (

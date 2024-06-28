@@ -14,9 +14,9 @@ export const MainTabNavigator = () => {
   const { role } = useAuth();
   return (
     <Tab.Navigator
-      // screenOptions={{
-      //   headerShown: false,
-      // }}
+      screenOptions={{
+        headerShown: false,
+      }}
       initialRouteName="Home"
     >
       <Tab.Screen
@@ -42,6 +42,7 @@ export const MainTabNavigator = () => {
           tabBarIcon: ({ color, size }) => (
             <Icon name="user" size={size} color={color} />
           ),
+          headerShown: false,
         }}
       />
     </Tab.Navigator>

@@ -1,24 +1,25 @@
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
-  StyleSheet,
-  View,
-  TextInput,
+  ActivityIndicator,
+  Platform,
   ScrollView,
   StatusBar,
+  StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
 import { fetchAllUsers } from "../api/apiService";
-import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import { Platform } from "react-native";
-import { FiltersModal } from "../markup";
-import { ActivityIndicator } from "react-native";
+import { COLORS } from "../constants";
 import { User } from "../interfaces/props.interface";
+import { FiltersModal } from "../markup";
+import UserCard from "./components/UserCard";
 
 const AdminUsers = () => {
   navigator = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredResults, setFilteredResults] = useState<User[]>([]);
   const [usersData, setUsersData] = useState<User[]>([]);
@@ -61,17 +62,13 @@ const AdminUsers = () => {
         setModalVisible={setModalVisible}
       />
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={COLORS.primary} />
       ) : error ? (
         <Text>{error}</Text>
       ) : (
-        <ScrollView style={styles.resultsContainer}>
+        <ScrollView contentContainerStyle={styles.resultsContainer}>
           {usersData.map((user) => (
-            <View key={user.email} style={styles.userCard}>
-              <TouchableOpacity style={{}} onPress={() => {}}>
-                <Text style={styles.userText}>{user.email}</Text>
-              </TouchableOpacity>
-            </View>
+            <UserCard key={user.userId} user={user} />
           ))}
         </ScrollView>
       )}
@@ -84,31 +81,46 @@ export default AdminUsers;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 0,
   },
   searchBar: {
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
+    backgroundColor: COLORS.background,
+    borderWidth: 5,
+
+    borderColor: COLORS.tertiary,
+    borderRadius: 50,
+
     padding: 10,
+    paddingStart: 20,
     margin: 10,
   },
   resultsContainer: {
     marginTop: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
   userText: {
     fontSize: 16,
-    margin: 10,
   },
   userCard: {
-    // Nuevo estilo para la tarjeta
+    backgroundColor: "#FFFFFF", // Fondo claro para la tarjeta
     borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 5,
-    padding: 10,
-    margin: 10,
+    borderColor: "#E0E0E0", // Borde más sutil
+    borderRadius: 10, // Bordes redondeados
+    padding: 15, // Más espacio interior
+    marginVertical: 8, // Espaciado vertical entre tarjetas
+    marginHorizontal: 10, // Espaciado horizontal desde los bordes del ScrollView
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    shadowColor: "#000", // Sombra para iOS
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4, // Elevación para Android
   },
   actionContainer: {
     flex: 1,

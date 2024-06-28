@@ -6,6 +6,7 @@ import { EditProfile } from "./EditProfile";
 import { Settings } from "./Settings";
 import { AdminStack } from "../admin/AdminStack";
 import { MarkUp } from "../markup";
+import { Home } from "../Home";
 
 const accStack = createStackNavigator();
 
@@ -14,7 +15,7 @@ export const AccountStack = () => {
     <accStack.Navigator
       initialRouteName="AccountMenu"
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
       }}
     >
       <accStack.Screen name="AccountMenu" component={Account} />
@@ -57,6 +58,15 @@ export const AccountStack = () => {
         component={MarkUp}
         options={{
           title: "MarkUp",
+          headerShown: true,
+        }}
+      />
+
+      <accStack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          title: "Home - Time Cards",
           headerShown: true,
         }}
       />

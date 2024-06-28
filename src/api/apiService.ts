@@ -59,9 +59,8 @@ export async function fetchRefreshAuth(refreshToken: string) {
     });
 
     const result = await response.json();
-    const token = result.data.accessToken;
-
-    return token;
+    console.log("result", result);
+    return result;
   } catch (error) {
     throw error;
   }

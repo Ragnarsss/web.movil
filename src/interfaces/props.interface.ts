@@ -61,6 +61,14 @@ interface ProviderProps {
   children: ReactNode;
 }
 
+interface TimeCardProps {
+  id: string;
+  entries: TimeCardEntryType[];
+  periodStart: Date;
+  periodEnd: Date;
+  user: User;
+}
+
 interface AuthContextType {
   isLoading: boolean;
   refreshToken: string | null;
@@ -94,4 +102,5 @@ export {
   MarkingContextType,
   ProviderProps,
   ShiftCardProps,
+  TimeCardProps,
 };

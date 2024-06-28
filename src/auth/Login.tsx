@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
-import { BaseResponse } from "../interfaces/response.interface";
 
 interface LoginProps {
   navigation: any;

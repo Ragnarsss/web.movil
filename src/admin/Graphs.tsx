@@ -1,10 +1,18 @@
 import { View, Text } from "react-native";
 import React from "react";
+import {
+  LinearChart,
+  BarChart,
+  PieChart,
+  ProgressChart,
+  ContributionGraph,
+  StackedBarChart,
+} from "react-native-chart-kit";
 
 const Graphs = () => {
   return (
     <View>
-      <Text>Graphs</Text>
+      <Text>Bezier Line Chart</Text>
     </View>
   );
 };
