@@ -1,5 +1,5 @@
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Platform,
@@ -49,13 +49,21 @@ const AdminUsers = () => {
     }, [])
   );
 
-  // The rest of your component remains the same
+  useEffect(() => {
+    const results = usersData.filter((user) =>
+      user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    setFilteredResults(results);
+  }, [searchQuery, usersData]);
+
   return (
     <View style={styles.container}>
       <TextInput
         style={styles.searchBar}
         placeholder="Buscar por correo..."
         value={searchQuery}
+        onChangeText={setSearchQuery}
       />
       <FiltersModal
         modalVisible={modalVisible}
@@ -67,7 +75,7 @@ const AdminUsers = () => {
         <Text>{error}</Text>
       ) : (
         <ScrollView contentContainerStyle={styles.resultsContainer}>
-          {usersData.map((user) => (
+          {filteredResults.map((user) => (
             <UserCard key={user.userId} user={user} />
           ))}
         </ScrollView>

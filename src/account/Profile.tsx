@@ -1,7 +1,7 @@
-import { NavigationProp } from "@react-navigation/native";
+import { NavigationProp, useFocusEffect } from "@react-navigation/native";
 import { AuthContext } from "../context/AuthContext";
 
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -13,16 +13,32 @@ import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import { useAuth } from "../hooks/useAuth";
+import { User } from "../interfaces/props.interface";
+import { fetchUserData } from "../api/apiService";
 
 export const Profile = ({
   navigation,
 }: {
   navigation: NavigationProp<any>;
 }) => {
-  const { user } = useAuth();
+  const { authToken } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
 
-  const fullName = `${user?.name !== null ? user?.name : "Nombre"} ${
-    user?.lastName !== null ? user?.lastName : "Apellido"
+  const getUser = async () => {
+    // Fetch user data from the API
+    const user = await fetchUserData(authToken as string);
+    setUser(user.data);
+    console.log(user.email);
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getUser();
+    }, [])
+  );
+
+  const fullName = `${user?.firstName ? user?.firstName : "Nombre"} ${
+    user?.lastName ? user?.lastName : "Apellido"
   }`;
 
   return (
@@ -36,7 +52,7 @@ export const Profile = ({
             <TouchableOpacity
               style={styles.editButton}
               onPress={() => {
-                navigation.navigate("Account", { screen: "EditProfile" });
+                navigation.navigate("EditProfile", { user });
               }}
             >
               <FontAwesome name="pencil" size={20} color="#000" />

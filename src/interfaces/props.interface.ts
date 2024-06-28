@@ -80,6 +80,7 @@ interface AuthContextType {
     email: string,
     password: string
   ) => Promise<BaseResponse>;
+  update: (userData: any) => Promise<BaseResponse>;
   refreshAuthToken: (token: string) => Promise<BaseResponse>;
   login: (email: string, password: string) => Promise<BaseResponse>;
   logout: () => void;

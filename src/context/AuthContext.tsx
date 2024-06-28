@@ -2,7 +2,12 @@ import { BaseResponse } from "../interfaces/response.interface";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
-import { fetchRefreshAuth, loginFetch, registerFetch } from "../api/apiService";
+import {
+  fetchRefreshAuth,
+  loginFetch,
+  registerFetch,
+  updateUserData,
+} from "../api/apiService";
 import { roles } from "../common/enum";
 import { AuthContextType } from "../interfaces/props.interface";
 
@@ -46,6 +51,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     loadData();
   }, []);
+
+  const update = async (userData: any) => {
+    try {
+      setIsLoading(true);
+      const response = await updateUserData(authToken as string, userData);
+      console.log(response.data);
+
+      if (response.statusCode !== 200) {
+        console.log("error", response.message);
+        setError(response.message);
+        return {
+          success: false,
+          statusCode: response.statusCode,
+          message: response.message,
+        };
+      }
+
+      return {
+        success: true,
+        statusCode: response.statusCode,
+        message: response.message,
+      };
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+    return {
+      success: false,
+      statusCode: 500,
+      message: "Internal server error",
+    };
+  };
 
   const register = async (
     userName: string,
@@ -169,11 +207,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         };
       }
 
-      console.log("mewTok", response.data.accessToken);
+      console.log("mewTok", response.data);
 
-      await AsyncStorage.setItem("authToken", response.data.accessToken);
+      await AsyncStorage.setItem("authToken", response.data);
 
-      setAuthToken(response.data.access_token);
+      setAuthToken(response.data);
     } catch (error) {
       console.log(error);
     } finally {
@@ -217,6 +255,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     isLoading,
     authToken,
     register,
+    update,
     logout,
     login,
     error,

@@ -1,34 +1,26 @@
-import { AuthContext } from "../context/AuthContext";
-
 import { useFormik } from "formik";
-import React, { useContext, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
 import { useAuth } from "../hooks/useAuth";
-import { User } from "../interfaces/response.interface";
-import { fetchUserData } from "../api/apiService";
+import { User } from "../interfaces/props.interface";
 
-export const EditProfile = () => {
-  const { email } = useAuth();
-  const [user, setUser] = useState<User | null>(null);
+interface EditProfileProps {
+  user: User;
+}
 
-  useEffect(() => {
-    const getUser = async () => {
-      // Fetch user data from the API
-      const user = await fetchUserData(email);
-      setUser(user);
-    };
+export const EditProfile: FC<EditProfileProps> = ({ user }) => {
+  const { authToken, email, role } = useAuth();
 
-    getUser();
-  }, [email]);
+  const [loading, setLoading] = useState(false);
 
   const initialValues = {
-    name: user?.name || "",
-    lastName: user?.lastName || "",
-    userName: user?.userName || "",
-    email: user?.email || "",
+    name: user?.firstName || "Your name",
+    lastName: user?.lastName || "Your last name",
+    userName: user?.userName || role,
+    email: user?.email || email,
     password: "",
   };
 

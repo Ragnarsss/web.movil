@@ -88,19 +88,41 @@ export async function fetchAllUsers() {
   }
 }
 
-//fetch user data
-export async function fetchUserData(email: string) {
+//update user data
+export async function updateUserData(token: string, user: any) {
   try {
-    const url = `${BASE_URL}user`;
+    const url = `${BASE_URL}users/update`;
 
-    const requestBody = JSON.stringify({ email });
+    const requestBody = JSON.stringify(user);
+
+    const response = await fetch(url, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: requestBody,
+    });
+
+    const result = await response.json();
+
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+//fetch user data
+export async function fetchUserData(token: string) {
+  try {
+    const url = `${BASE_URL}users/userData`;
 
     const response = await fetch(url, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-      body: requestBody,
     });
 
     const result = await response.json();
