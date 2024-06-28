@@ -33,9 +33,11 @@ export const ForgotPassword: React.FC<Props> = ({ navigation }) => {
       <Text style={styles.title}>Forgot Password</Text>
       <TextInput
         style={styles.input}
-        placeholder="Email"
+        placeholder="email"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(text) => {
+          formik.setFieldValue("email", text);
+        }}
       />
       <Text style={styles.error}>{formik.errors.email || ""}</Text>
       <TouchableOpacity

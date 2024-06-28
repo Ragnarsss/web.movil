@@ -12,13 +12,14 @@ import {
 import { ScrollView } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import { useAuth } from "../hooks/useAuth";
 
 export const Profile = ({
   navigation,
 }: {
   navigation: NavigationProp<any>;
 }) => {
-  const { user } = useContext(AuthContext)!;
+  const { user } = useAuth();
 
   const fullName = `${user?.name !== null ? user?.name : "Nombre"} ${
     user?.lastName !== null ? user?.lastName : "Apellido"

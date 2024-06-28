@@ -6,21 +6,22 @@ import React, { useContext, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
+import { useAuth } from "../hooks/useAuth";
 
 type Props = {
   navigation: StackNavigationProp<any>;
 };
 
 export const Register: React.FC<Props> = () => {
-  const { register } = useContext(AuthContext)!;
+  const { register } = useAuth();
   const [loading, setLoading] = useState(false);
   const formik = useFormik({
     initialValues: initialValues,
     validateOnChange: false,
-    onSubmit: () => {
+    onSubmit: async () => {
       setLoading(true);
       try {
-        register(
+        await register(
           formik.values.userName,
           formik.values.email,
           formik.values.password

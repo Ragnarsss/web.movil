@@ -1,22 +1,35 @@
 import { AuthContext } from "../context/AuthContext";
 
 import { useFormik } from "formik";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
+import { useAuth } from "../hooks/useAuth";
+import { User } from "../interfaces/response.interface";
+import { fetchUserData } from "../api/apiService";
 
 export const EditProfile = () => {
-  const [loading, setLoading] = useState(false);
+  const { email } = useAuth();
+  const [user, setUser] = useState<User | null>(null);
 
-  const { user, isLoading } = useContext(AuthContext)!;
+  useEffect(() => {
+    const getUser = async () => {
+      // Fetch user data from the API
+      const user = await fetchUserData(email);
+      setUser(user);
+    };
+
+    getUser();
+  }, [email]);
+
   const initialValues = {
     name: user?.name || "",
     lastName: user?.lastName || "",
     userName: user?.userName || "",
     email: user?.email || "",
-    password: "Password",
+    password: "",
   };
 
   const formik = useFormik({
@@ -49,21 +62,21 @@ export const EditProfile = () => {
       <Text style={styles.error}>{formik.errors.userName || ""}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Name"
+        placeholder="Nombre"
         value={formik.values.name}
         onChangeText={(text) => formik.setFieldValue("name", text)}
       />
       <Text style={styles.error}>{formik.errors.name || ""}</Text>
       <TextInput
         style={styles.input}
-        placeholder="Last Name"
+        placeholder="Apellido"
         value={formik.values.lastName}
         onChangeText={(text) => formik.setFieldValue("lastName", text)}
       />
       <Text style={styles.error}>{formik.errors.lastName || ""}</Text>
       <TextInput
         style={styles.input}
-        placeholder="password"
+        placeholder="Contraseña"
         value={formik.values.password}
         onChangeText={(text) => formik.setFieldValue("password", text)}
         secureTextEntry={true}
@@ -131,5 +144,7 @@ const validationSchema = Yup.object().shape({
   name: Yup.string(),
   lastName: Yup.string(),
   userName: Yup.string(),
-  password: Yup.string().required("Required"),
+  password: Yup.string().required(
+    "Contraseña requerida para guardar los cambios"
+  ),
 });

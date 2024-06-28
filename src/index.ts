@@ -8,7 +8,6 @@ export * from "./auth/Login";
 export * from "./auth/Register";
 export * from "./constants/theme";
 export * from "./context/AuthContext";
-export * from "./context/DarkModeContext";
 export * from "./hooks/useAuth";
 export * from "./interfaces/response.interface";
 export * from "./markup/components/EntriesRender";

@@ -1,65 +1,41 @@
 import { MarkSlot } from "./MarkSlot";
 
-import React, { useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { FC, useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { formatDate } from "../../common/utils";
+import { ShiftCardProps } from "../../interfaces/props.interface";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-export const ShiftCard = () => {
+export const ShiftCard: FC<ShiftCardProps> = ({ entryId, entry }) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [markTimes, setMarkTimes] = useState<(Date | null)[]>(
-    Array(6).fill(null)
-  );
+  const [isComplete, setIsComplete] = useState(false);
 
   const handleExpand = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const handleMark = () => {
-    // Creamos una copia del estado actual de markTimes
-    const newMarkTimes = [...markTimes];
-
-    // Buscamos el primer índice en el array que sea null, lo que indica que no se ha marcado aún
-    const firstNullIndex = newMarkTimes.indexOf(null);
-
-    // Si encontramos un índice null (es decir, firstNullIndex no es -1), entonces hay un espacio para una nueva marca
-    if (firstNullIndex !== -1) {
-      // Asignamos la hora actual al primer espacio null que encontramos
-      newMarkTimes[firstNullIndex] = new Date();
-
-      // Actualizamos el estado de markTimes con el nuevo array
-      setMarkTimes(newMarkTimes);
-    }
-  };
-
   return (
     <TouchableOpacity onPress={handleExpand} style={styles.card}>
-      <Text style={styles.title}>Turno</Text>
+      <Text style={styles.title}>Turno - {formatDate(entry.date)}</Text>
+
+      <Icon
+        name={isExpanded ? "arrow-up" : "arrow-down"} // Cambia el icono basado en isExpanded
+        size={20} // Tamaño del icono
+        style={styles.expandIcon} // Estilo para posicionar el icono
+      />
+
       <View style={styles.row}>
-        {markTimes.map((markTime, index) => {
-          const markHour = markTime?.getHours();
-          const markMinute = markTime?.getMinutes();
-          return (
-            <MarkSlot
-              key={index}
-              status={markTime ? "marked" : "notMarked"}
-              showTime={isExpanded}
-              markTime={
-                markHour && markMinute
-                  ? `${markHour}:${
-                      markMinute < 10 ? "0" + markMinute : markMinute
-                    }`
-                  : ""
-              }
-            />
-          );
-        })}
-      </View>
-      {isExpanded && (
-        <Button
-          title="Marcar"
-          onPress={handleMark}
-          disabled={markTimes.every((markTime) => markTime !== null)}
+        <MarkSlot
+          entryId={entry.id}
+          isExpanded={isExpanded}
+          updateComplete={setIsComplete}
+          isComplete={isComplete}
+          date={formatDate(entry.date)}
+          entry={formatDate(entry.entry)}
+          exit={formatDate(entry.exit)}
+          user={entry.user}
         />
-      )}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -78,6 +54,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
+    position: "relative",
+  },
+  expandIcon: {
+    position: "absolute", // Posiciona el icono absolutamente dentro de card
+    right: 10, // 10 píxeles desde el lado derecho de card
+    top: 10, // 10 píxeles desde la parte superior de card
   },
   title: {
     fontSize: 20,

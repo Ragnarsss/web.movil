@@ -1,18 +1,10 @@
-import { BaseResponse, User } from "../interfaces/response.interface";
+import { BaseResponse } from "../interfaces/response.interface";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { ReactNode, createContext, useEffect, useState } from "react";
-import { loginFetch, registerFetch } from "../api/apiService";
-
-interface AuthContextType {
-  isLoading: boolean;
-  register(userName: string, email: string, password: string): void;
-  login: (email: string, password: string) => void;
-  logout: () => void;
-  user: User | null;
-  authToken: string | null;
-  refreshToken: string | null;
-}
+import { fetchRefreshAuth, loginFetch, registerFetch } from "../api/apiService";
+import { AuthContextType, User } from "../interfaces/props.interface";
+import { roles } from "../common/enum";
 
 interface AuthProviderProps {
   children: ReactNode;
@@ -24,19 +16,35 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [authToken, setAuthToken] = useState<string | null>(null);
   const [refreshToken, setRefreshToken] = useState<string | null>(null);
+  const [role, setRole] = useState<roles>(roles.WORKER);
+  const [email, setEmail] = useState<string | null>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
-    const loadUserFromStorage = async () => {
-      const storedUser = await AsyncStorage.getItem("user");
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+    const loadData = async () => {
+      if (authToken) {
+        const authToken = await AsyncStorage.getItem("authToken");
+        const refreshToken = await AsyncStorage.getItem("refreshToken");
+        const role = await AsyncStorage.getItem("role");
+        const email = await AsyncStorage.getItem("email");
+
+        if (role) {
+          setRole(role as roles);
+        }
+
+        if (email) {
+          setEmail(email);
+        }
+
+        if (refreshToken) {
+          setRefreshToken(refreshToken);
+        }
+        setAuthToken(authToken);
       }
     };
 
-    loadUserFromStorage();
+    loadData();
   }, []);
 
   const register = async (
@@ -66,16 +74,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     } finally {
       setIsLoading(false);
     }
+    return {
+      success: false,
+      statusCode: 500, // Fallback to a generic error code if none is provided
+      message: "An unexpected error occurred",
+    };
   };
 
   const login = async (
-    email: string,
+    loginEmail: string,
     password: string
   ): Promise<BaseResponse> => {
     setIsLoading(true);
     try {
-      const response = await loginFetch(email, password);
-
+      const response = await loginFetch(loginEmail, password);
       if (response.statusCode !== 200) {
         setError(response.message);
         return {
@@ -84,13 +96,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           message: response.message,
         };
       }
-      await AsyncStorage.setItem("authToken", response.data.accessToken);
-      await AsyncStorage.setItem("refreshToken", response.data.refreshToken);
-      await AsyncStorage.setItem("user", JSON.stringify(response.data.user));
 
-      setAuthToken(response.data.accessToken);
-      setRefreshToken(response.data.refreshToken);
-      setUser(response.data.user);
+      const dataToStore = response.data;
+      const { accessToken, refreshToken, role, email } = dataToStore;
+
+      await AsyncStorage.setItem("authToken", accessToken);
+      await AsyncStorage.setItem("refreshToken", refreshToken);
+      await AsyncStorage.setItem("role", role);
+      await AsyncStorage.setItem("email", email);
+
+      setAuthToken(accessToken);
+      setRefreshToken(refreshToken);
+      setRole(role as roles);
+      setEmail(email);
     } catch (error) {
       if (error instanceof Error) {
         return {
@@ -143,18 +161,57 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const refreshAuthToken = async (): Promise<BaseResponse> => {
+    setIsLoading(true);
+    try {
+      if (!refreshToken) {
+        return {
+          success: false,
+          statusCode: 401,
+          message: "Unauthorized",
+        };
+      }
+      const response = await fetchRefreshAuth(refreshToken);
+
+      if (!response.success) {
+        setError(response.message);
+        return {
+          success: false,
+          statusCode: response.statusCode,
+          message: response.message,
+        };
+      }
+
+      await AsyncStorage.setItem("authToken", response.data.accessToken);
+
+      setAuthToken(response.data.accessToken);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+    return {
+      success: false,
+      statusCode: 500,
+      message: "Internal server error",
+    };
+  };
+
   useEffect(() => {
     checkIfUserIsLoggedIn();
   }, []);
 
   const contextValue = {
+    refreshAuthToken,
     refreshToken,
-    authToken,
     isLoading,
-    user,
+    authToken,
     register,
-    login,
     logout,
+    login,
+    error,
+    email,
+    role,
   };
 
   return (

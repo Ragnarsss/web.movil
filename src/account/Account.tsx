@@ -1,16 +1,17 @@
-import { AuthContext } from "../context/AuthContext";
-
 import { NavigationProp } from "@react-navigation/native";
-import React, { useContext } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useAuth } from "../hooks/useAuth";
 
 export const Account = ({
   navigation,
 }: {
   navigation: NavigationProp<any>;
 }) => {
-  const { logout } = useContext(AuthContext)!;
+  const { logout, role } = useAuth();
+
+  useEffect(() => {}, [role]);
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity
@@ -37,6 +38,22 @@ export const Account = ({
       >
         <Text style={styles.buttonText}>Logout</Text>
       </TouchableOpacity>
+      {role === "administrador" ? (
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => {
+            navigation.navigate("AdministratorStack");
+          }}
+        >
+          <Text style={styles.buttonText}>Admin</Text>
+        </TouchableOpacity>
+      ) : null}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate("MarkUp");
+        }}
+      />
     </SafeAreaView>
   );
 };
@@ -47,6 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 10,
+    minHeight: "100%",
   },
   button: {
     backgroundColor: "#1E90FF",

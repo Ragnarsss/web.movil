@@ -4,6 +4,9 @@ import { Account } from "./Account";
 import { Profile } from "./Profile";
 import { EditProfile } from "./EditProfile";
 import { Settings } from "./Settings";
+import { AdminStack } from "../admin/AdminStack";
+import { MarkUp } from "../markup";
+
 const accStack = createStackNavigator();
 
 export const AccountStack = () => {
@@ -37,6 +40,23 @@ export const AccountStack = () => {
         component={Settings}
         options={{
           title: "Settings",
+          headerShown: true,
+        }}
+      />
+      <accStack.Screen
+        name="AdministratorStack"
+        component={AdminStack}
+        options={{
+          title: "Admin",
+          headerShown: true,
+        }}
+      />
+
+      <accStack.Screen
+        name="MarkUp"
+        component={MarkUp}
+        options={{
+          title: "MarkUp",
           headerShown: true,
         }}
       />

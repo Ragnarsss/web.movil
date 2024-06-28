@@ -1,38 +1,44 @@
-import { DaySlot } from "./DaySlot";
+import React, { FC } from "react";
+import { View, Text, StyleSheet, SafeAreaView } from "react-native";
+import TimeCardEntry from "./TimeCardEntry";
+import { TimeCardEntryType, User } from "../../interfaces/props.interface";
 
-import React from "react";
-import { View, Text, StyleSheet } from "react-native";
+interface TimeCardProps {
+  id: string;
+  entries: TimeCardEntryType[];
+  periodStart: Date;
+  periodEnd: Date;
+  user: User;
+}
 
-export const TimeCard = () => {
-  // Añade las fechas de inicio y fin aquí. Estos valores son solo para demostración.
-  const startDate = new Date();
-  const endDate = new Date();
-
+export const TimeCard: FC<TimeCardProps> = ({
+  id,
+  entries,
+  periodStart,
+  periodEnd,
+  user,
+}) => {
   // Formatea las fechas y horas
-  const startDateTime = `${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString(
-    [],
-    { hour: "2-digit", minute: "2-digit" }
-  )}`;
-  const endDateTime = `${endDate.toLocaleDateString()} ${endDate.toLocaleTimeString(
-    [],
-    { hour: "2-digit", minute: "2-digit" }
-  )}`;
-
+  const startDateTime = new Date(periodStart).toLocaleString();
+  const endDateTime = new Date(periodEnd).toLocaleString();
   return (
-    <View style={styles.timeCard}>
+    <SafeAreaView style={styles.timeCard}>
+      <Text>Time Card ID: {id}</Text>
       <View style={styles.headerView}>
-        <Text style={styles.timeCardText}>Time Card</Text>
+        <Text style={styles.timeCardText}>
+          User: {user.userName ? user.userName : user.email}
+        </Text>
         <View style={styles.dateView}>
-          <Text>Start: {startDateTime}</Text>
-          <Text>End: {endDateTime}</Text>
+          <Text>Period Start: {startDateTime}</Text>
+          <Text>Period End: {endDateTime}</Text>
         </View>
       </View>
       <View style={styles.contentView}>
-        {Array.from({ length: 15 }, (_, index) => (
-          <DaySlot key={index} />
+        {entries.map((entry, index) => (
+          <TimeCardEntry key={index} entry={entry} />
         ))}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -69,7 +75,7 @@ const styles = StyleSheet.create({
     padding: 10, // Añade este padding
   },
   contentView: {
-    height: 20,
+    height: "auto",
     backgroundColor: "#FFFFFF",
     padding: 5,
     flexDirection: "row",

@@ -2,9 +2,16 @@ import { AuthContext } from "../context/AuthContext";
 
 import { useFormik } from "formik";
 import React, { useContext, useState } from "react";
-import { StyleSheet, Text, TextInput, TouchableOpacity } from "react-native";
+import {
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import * as Yup from "yup";
+import { BaseResponse } from "../interfaces/response.interface";
 
 interface LoginProps {
   navigation: any;
@@ -17,9 +24,12 @@ export const Login: React.FC<LoginProps> = (props) => {
   const formik = useFormik({
     initialValues: initialValues,
     validateOnChange: false,
-    onSubmit: () => {
+    onSubmit: async () => {
       setLoading(true);
-      login(formik.values.email, formik.values.password);
+      const response = await login(formik.values.email, formik.values.password);
+      if (response.statusCode === 401) {
+        Alert.alert("Error", "Email or password is incorrect");
+      }
       setLoading(false);
     },
     validationSchema: Yup.object(validationSchema),
@@ -135,8 +145,8 @@ const validationSchema = {
   password: Yup.string()
     .min(8, "La contraseña debe tener al menos 8 caracteres")
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/,
-      "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial"
+      /^(?=.*[a-záéíóúüñ])(?=.*[A-ZÁÉÍÓÚÜÑ])(?=.*\d)(?=.*[^A-Za-z\d\s]).+$/,
+      "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial (@$!%*?&.)"
     )
     .required("Password is required"),
 };

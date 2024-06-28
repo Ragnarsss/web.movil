@@ -6,10 +6,12 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import React from "react";
 import { Image } from "react-native";
 import { Home } from "../Home";
+import { useAuth } from "../hooks/useAuth";
 
 const Tab = createBottomTabNavigator();
 
 export const MainTabNavigator = () => {
+  const { role } = useAuth();
   return (
     <Tab.Navigator
       // screenOptions={{
